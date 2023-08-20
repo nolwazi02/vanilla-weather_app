@@ -1,46 +1,87 @@
-
-function formatDate(timestamp) {
-    let date = new Date(timestamp);
-    let hours = date.gethours();
+function formatDate(date) {
+    let hours = date.getHours();
     if (hours < 10) {
-    hours = `0${hours}`;
-    }  
-    let minutes • date.getMinutes();
-    if (minutes < 10) {
-    minutes = `0${minutes}`;
+      hours = `0${hours}`;
     }
-
+    let minutes = date.getMinutes();
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+  
+    let dayIndex = date.getDay();
     let days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
     ];
-    let day = days[date.getDay()];
+    let day = days[dayIndex];
+  
     return `${day} ${hours}:${minutes}`;
-}
-function displayTemperature(response) {
-    let temperatureElement = document.queryselector("#temperature");
-    let cityElement = document.queryselector("#city");
-    let descriptionElement = document.queryselector("#description");
-    let humidityElement = document. queryselector("#humidity");
-    let windElement = document.queryselector("#wind") ;
-    let dateElement = document.queryselector("#date");
-
-    temperatureElement.innerHTML = Math. round(response.data.main.temp);
-    cityElement.innerHTML = response. data.name;
-    descriptionElement.innerHTML = response.data.weather[0].description;
-    humidityElement.innerHTML = response.data.main.humidity;
-    windElement.innerHTML = Math.round(response. data.wind speed);
-    dateElement.innerHTML = formatDate(response, data. dt * 1000);
-}
-
-let apiKey = "d7a44ecca67a67e7e9ad242da1c287d4";
-let city = "paris";
-let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${paris}&appid=${d7a44ecca67a67e7e9ad242da1c287d4}`;
-
-axios.get(apiUrl).then(displayTemperature);
-    
+  }
+  
+  function displayWeatherCondition(response) {
+    document.querySelector("#city").innerHTML = response.data.name;
+    document.querySelector("#temperature").innerHTML = Math.round(
+      response.data.main.temp
+    );
+  
+    document.querySelector("#humidity").innerHTML = response.data.main.humidity;
+    document.querySelector("#wind").innerHTML = Math.round(
+      response.data.wind.speed
+    );
+    document.querySelector("#description").innerHTML =
+      response.data.weather[0].main;
+  }
+  
+  function searchCity(city) {
+    let apiKey = "6e6ec494746b5229a9f2d526478c924c";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayWeatherCondition);
+  }
+  
+  function handleSubmit(event) {
+    event.preventDefault();
+    let city = document.querySelector("#city-input").value;
+    searchCity(city);
+  }
+  
+  function searchLocation(position) {
+    let apiKey = "6e6ec494746b5229a9f2d526478c924c";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&units=metric`;
+  
+    axios.get(apiUrl).then(displayWeatherCondition);
+  }
+  
+  function getCurrentLocation(event) {
+    event.preventDefault();
+    navigator.geolocation.getCurrentPosition(searchLocation);
+  }
+  
+  function convertToFahrenheit(event) {
+    event.preventDefault();
+    let temperatureElement = document.querySelector("#temperature");
+    temperatureElement.innerHTML = 66;
+  }
+  
+  function convertToCelsius(event) {
+    event.preventDefault();
+    let temperatureElement = document.querySelector("#temperature");
+    temperatureElement.innerHTML = 19;
+  }
+  
+  let dateElement = document.querySelector("#date");
+  let currentTime = new Date();
+  dateElement.innerHTML = formatDate(currentTime);
+  
+  let searchForm = document.querySelector("#search-form");
+  searchForm.addEventListener("submit", handleSubmit);
+  
+  let currentLocationButton = document.querySelector("#current-location-button");
+  currentLocationButton.addEventListener("click", getCurrentLocation);
+  
+  searchCity("New York");
+  
