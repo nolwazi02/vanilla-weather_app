@@ -38,7 +38,7 @@ function formatDate(date) {
   }
   
   function searchCity(city) {
-    let apiKey = "6e6ec494746b5229a9f2d526478c924c";
+    let apiKey = "b6033b4ebbd9ec5a6a959t639b47foa4";
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
     axios.get(apiUrl).then(displayWeatherCondition);
   }
@@ -49,9 +49,9 @@ function formatDate(date) {
     searchCity(city);
   }
   
-  function searchLocation(position) {
-    let apiKey = "6e6ec494746b5229a9f2d526478c924c";
-    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&units=metric`;
+  function locationId(icon id) {
+    let apiKey = "b6033b4ebbd9ec5a6a959t639b47foa4";
+    let apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&units={units}`;
   
     axios.get(apiUrl).then(displayWeatherCondition);
   }
@@ -83,5 +83,16 @@ function formatDate(date) {
   let currentLocationButton = document.querySelector("#current-location-button");
   currentLocationButton.addEventListener("click", getCurrentLocation);
   
-  searchCity("New York");
+  searchCity("pretoria");
+  let weatherIcon = document.querySelector("#icon");
+  let iconCode = response.data.weather[0].icon;
+  let iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+  weatherIcon.src = iconUrl;
+
+  function displayWeatherCondition(response) {
+    document.querySelector("#city").innerHTML = response.data.name;
+    document.querySelector("#temperature").innerHTML = Math.round(response.data.main.temp);
+    document.querySelector("#humidity").innerHTML = response.data.main.humidity;
+    document.querySelector("#wind").innerHTML = Math.round(response.data.wind.speed);
+    document.querySelector("#description").innerHTML = response.data.weather[0].main;
   
